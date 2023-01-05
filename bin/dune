@@ -1,0 +1,11 @@
+(executable
+ (name repl)
+ (public_name repl)
+ (modules Repl)
+ (libraries fomega eio eio_main))
+
+(executable
+ (name check)
+ (public_name check)
+ (modules Check)
+ (libraries fomega eio eio_main))

@@ -1,0 +1,9 @@
+(library
+ (name fomega)
+ (libraries menhirLib compiler-libs.common)
+ (preprocess
+  (pps ppx_deriving.show ppx_deriving.eq ppx_deriving.ord sedlex.ppx)))
+
+(menhir
+ (modules parser)
+ (flags --dump --explain))
