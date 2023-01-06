@@ -1,0 +1,37 @@
+type Never === forall A. A in
+type Unit === forall A. A -> A in
+
+kind T_bool === * -> * -> * in
+type T_true : T_bool === fun t f -> t in
+type T_false : T_bool === fun t f -> f in
+type T_case (pred : T_bool) (then_ : *) (else_ : *) : * ===
+  pred then_ else_ in
+
+type Equal (A : T_bool) (B : T_bool) === forall (P : T_bool -> *). P A -> P B in
+let refl (type A : T_bool) : Equal A A === fun (type P) p_a -> p_a in
+let symm (type A : T_bool) (type B : T_bool) (eq : Equal A B) : Equal B A ===
+  eq (type (fun X -> Equal X A)) (refl (type A)) in
+
+type Bool (H : T_bool) ===
+  forall A. (Equal T_true H -> A) -> (Equal T_false H -> A) -> A in
+let true : Bool T_true === fun (type A) t f -> t (refl (type T_true)) in
+let false : Bool T_false === fun (type A) t f -> f (refl (type T_false)) in
+
+let ind_bool
+  : forall (T_b : T_bool). Bool T_b ->
+    forall (P : T_bool -> *). P T_true -> P T_false -> P T_b
+  === fun (type T_b) b (type P) p_t p_f ->
+    b (type P T_b)
+      (fun T_true_eq_T_b -> T_true_eq_T_b (type (fun X -> P X)) p_t)
+      (fun T_false_eq_T_b -> T_false_eq_T_b (type (fun X -> P X)) p_f) in
+
+let when_true_unit
+  : forall (T_b : T_bool). Bool T_b -> T_b Unit Never -> Unit
+  === fun (type T_b) b unit_or_never ->
+    ind_bool (type T_b) b
+      (type (fun X -> X Unit Never -> Unit))
+      (fun x -> x)
+      (fun never -> never (type Unit))
+      unit_or_never
+  in
+when_true_unit

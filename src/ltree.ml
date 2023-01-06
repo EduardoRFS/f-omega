@@ -20,5 +20,3 @@ and typ_ =
   | LT_annot of typ_ * kind
 
 and kind = LK_var of name | LK_type | LK_arrow of kind * kind
-
-type 'a ty = Int : int ty | String : string ty
