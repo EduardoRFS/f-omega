@@ -15,10 +15,14 @@ exception Type_annotation_required
 
 let () =
   Printexc.register_printer (function
-    | Type_clash { expected; received } ->
+    | Type_clash { received; expected } ->
         Some
           (Format.asprintf "expected: %a, received: %a" Ttree.pp_type expected
              Ttree.pp_type received)
+    | Kind_clash { received; expected } ->
+        Some
+          (Format.asprintf "expected: %a, received: %a" Ttree.pp_kind expected
+             Ttree.pp_kind received)
     | _ -> None)
 
 let rec subst ~from ~to_ typ_ =
