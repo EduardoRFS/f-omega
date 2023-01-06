@@ -1,5 +1,6 @@
 type Never === forall A. A in
 type Unit === forall A. A -> A in
+let unit : Unit === fun (type A) x -> x in
 
 kind T_bool === * -> * -> * in
 type T_true : T_bool === fun t f -> t in
@@ -34,4 +35,8 @@ let when_true_unit
       (fun never -> never (type Unit))
       unit_or_never
   in
-when_true_unit
+let true_is_not_false
+  : Equal T_true T_false -> Never
+  === fun eq -> eq (type (fun X -> X Unit Never)) unit in
+
+true_is_not_false
